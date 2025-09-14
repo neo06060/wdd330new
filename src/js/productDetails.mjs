@@ -1,5 +1,5 @@
 // src/js/ProductDetails.mjs
-import { setLocalStorage, getLocalStorage } from "./utils.mjs";
+import { setLocalStorage, getLocalStorage } from "/wdd330new/src/js/utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -34,7 +34,7 @@ export default class ProductDetails {
     setLocalStorage("so-cart", cart);
 
     // redirect to cart page
-    window.location.href = "../cart/index.html";
+    window.location.href = "/wdd330new/dist/cart/index.html";
   }
 
   renderProductDetails() {
