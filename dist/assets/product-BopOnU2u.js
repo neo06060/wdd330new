@@ -1,4 +1,4 @@
-import { setLocalStorage as n } from "/dist/assets/utils-DTA1AWa-.js";
+import { setLocalStorage as n } from "../dist/assets/utils-DTA1AWa-.js";
 
 function handleFetchResponse(res) {
     if(res.ok) return res.json();
