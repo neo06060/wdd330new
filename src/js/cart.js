@@ -1,5 +1,6 @@
 import { getLocalStorage, setLocalStorage } from "./utils.mjs";
-import ProductData from "./ProductData.mjs";
+import ProductData from "./productData.mjs";
+import { updateCartBadge } from "./cartBadge.js";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart") || [];
@@ -22,8 +23,6 @@ function cartItemTemplate(item) {
     <p class="cart-card__price">$${item.FinalPrice}</p>
   </li>`;
 }
-
-// ---- inicializa el carrito ----
 renderCartContents();
 
 export async function addProductToCart(productId) {
@@ -31,7 +30,7 @@ export async function addProductToCart(productId) {
     const dataSource = new ProductData("../json/tents.json");
     const product = await dataSource.findProductById(productId);
 
-    if(!product){
+    if (!product) {
       console.error("Product not found");
       return;
     }
@@ -45,11 +44,10 @@ export async function addProductToCart(productId) {
 }
 // ---- clear cart ----
 function clearCart() {
-  localStorage.removeItem("so-cart"); // elimina datos del carrito
-  location.reload(); // refresca la página
+  localStorage.removeItem("so-cart"); 
+  renderCartContents();
+  updateCartBadge();
 }
-
-// ---- enganchar el evento cuando el DOM ya está listo ----
 document.addEventListener("DOMContentLoaded", () => {
   const clearBtn = document.querySelector("#clearCart");
   if (clearBtn) {

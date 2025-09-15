@@ -6,7 +6,6 @@ export default class ProductDetails {
     this.dataSource = dataSource;
     this.product = {};
   }
-
   async init() {
     // fetch product details
     this.product = await this.dataSource.findProductById(this.productId);
@@ -20,7 +19,6 @@ export default class ProductDetails {
       addBtn.addEventListener("click", this.addProductToCart.bind(this));
     }
   }
-
   addProductToCart() {
     let cart = getLocalStorage("so-cart") || [];
 
@@ -37,18 +35,21 @@ export default class ProductDetails {
   renderProductDetails() {
   if (!this.product) return;
 
-  document.getElementById("productName").textContent = this.product.Name;
-  document.getElementById("productDescription").innerHTML =
-    this.product.DescriptionHtmlSimple || "";
-  document.getElementById("productPrice").textContent = `$${this.product.FinalPrice}`;
-  document.getElementById("productImage").src = this.product.Image;
+    document.getElementById("productName").textContent = this.product.Name;
+    document.getElementById("productDescription").innerHTML =
+      this.product.DescriptionHtmlSimple || "";
+    document.getElementById("productPrice").textContent = `$${this.product.FinalPrice}`;
 
-  const brand = typeof this.product.Brand === "object"
-    ? this.product.Brand.Name
-    : this.product.Brand;
-  document.getElementById("productBrand").textContent = brand || "";
+    const img = document.getElementById("productImage");
+    img.src = this.product.Image;
+    img.alt = this.product.NameWithoutBrand;
 
-  document.getElementById("productColor").textContent =
-    this.product.Colors?.[0]?.ColorName || "";
+    const brand = typeof this.product.Brand === "object"
+      ? this.product.Brand.Name
+      : this.product.Brand;
+    document.getElementById("productBrand").textContent = brand || "";
+
+    document.getElementById("productColor").textContent =
+      this.product.Colors?.[0]?.ColorName || "";
   }
 }

@@ -1,6 +1,6 @@
 // src/js/products.js
 import { getParam } from "./utils.mjs";
-import ProductData from "./ProductData.mjs";
+import ProductData from "./productData.mjs";
 import ProductDetails from "./productDetails.mjs";
 
 const productId = getParam("product");

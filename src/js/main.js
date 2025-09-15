@@ -1,5 +1,6 @@
-import ProductData from "./ProductData.mjs";
+import ProductData from "./productData.mjs";
 import ProductDetails from "./productDetails.mjs";
+import { updateCartBadge } from "./cartBadge.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("product");
@@ -12,3 +13,6 @@ if (productId) {
   document.getElementById("productDetails").innerHTML =
     "<p>⚠️ No product selected</p>";
 }
+
+// actualiza el badge al cargar la página
+updateCartBadge();
