@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Alpine Guide tent 3</title>
-  <link rel="stylesheet" href="/src/css/style.css" />
-    <script type="module" crossorigin src="../assets/utils-DTA1AWa-.js"></script>
-    <script type="module" crossorigin src="../assets/product-BopOnU2u.js"></script>
-    <link rel="stylesheet" crossorigin href="../assets/style-C0BBSZZq.css">
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
   <body>
     <header class="divider">
@@ -42,44 +39,37 @@
             <path
               d="M60.1 71.4v3.3h-5.2v-3.4c-1.7-0.3-3.3-0.7-4.6-1 -0.9 6.8-1.1 13.3-0.3 14.5 0.4 0.3 2.9 1.1 8 1.1h0c5 0 8.8-0.7 9.7-1.3 0.8-1.3 0.6-7.7-0.4-14.4C65.5 70.5 62.7 71.1 60.1 71.4z"
             />
-
-            <!-- <text x="0" y="115" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by Natalia Woodroffe</text>
-            <text x="0" y="120" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text> -->
           </svg>
         </a>
       </div>
-    </header>
-  <main>  
-  <main class="divider">
-    <div class="product-detail">
-      <h2 id="productName"></h2>
-      <main class="divider"></main>
-      <img id="productImage" src="ProductImage" />
-      <main class="divider"></main>
-      <p id="productPrice"></p>
-      <div class="product-info">
-      <p id="productColor"></p>
-        <p id="productBrand"></p>
-        <div id="productDescription"></div>
-        <button id="addToCart">Add to Cart</button>
-      </div>
+    </header> 
+    <main class="divider">
+      <div class="product-detail">
+        <h2 id="productName"></h2>
+        <img id="productImage" class="divider" alt="Product image" 
+        src="../images/tents/marmot-ajax-tent-3-person-3-season-in-pale-pumpkin-terracotta~p~880rr_01~320.jpg"
+        />
+        <p id="productPrice"></p>
+        <div class="product-info">
+          <p id="productColor"></p>
+          <p id="productBrand"></p>
+          <div id="productDescription"></div>
+          <br>
+          <button id="addToCart">Add to Cart</button>
         </div>
+      </div>
     </main>
-    </main>
-
     <footer>&copy;NOT a real business</footer>
-  </body>
-</html>
-  <script type="module">
+    <script type="module">
     
-    import ProductData from "/src/js/ProductData.mjs";
-    import ProductDetails from "/src/js/ProductDetails.mjs";
-
-    const dataSource = new ProductData("/src/json/tents.json");
+    import ProductData from "../js/ProductData.mjs";
+    import ProductDetails from "../js/ProductDetails.mjs";
+    const dataSource = new ProductData("../json/tents.json");
 
     // ⚠️ Make sure the Id in tents.json matches this!
     const productId = "880RT";
-
     const productDetails = new ProductDetails(productId, dataSource);
     productDetails.init();
   </script>
+  </body>
+</html>

@@ -1,4 +1,5 @@
-import { getLocalStorage } from "/wdd330new/src/js/utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import ProductData from "./ProductData.mjs";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart") || [];
@@ -25,6 +26,23 @@ function cartItemTemplate(item) {
 // ---- inicializa el carrito ----
 renderCartContents();
 
+export async function addProductToCart(productId) {
+  try {
+    const dataSource = new ProductData("../json/tents.json");
+    const product = await dataSource.findProductById(productId);
+
+    if(!product){
+      console.error("Product not found");
+      return;
+    }
+    const cart = getLocalStorage("so-cart") || [];
+    cart.push(product);
+    setLocalStorage("so-cart", cart);
+    alert(`${product.Name} Product added to cart  🛒`);
+  } catch (err) {
+    console.error("Error adding product to cart:", err);
+  }
+}
 // ---- clear cart ----
 function clearCart() {
   localStorage.removeItem("so-cart"); // elimina datos del carrito

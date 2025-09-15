@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>North Face Talus 4</title>
-  <link rel="stylesheet" href="/src/css/style.css" />
-    <script type="module" crossorigin src="/dist/assets/utils-DTA1AWa-.js"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+    <!-- <script type="module" crossorigin src="/dist/assets/utils-DTA1AWa-.js"></script>
     <script type="module" crossorigin src="/dist/assets/product-BopOnU2u.js"></script>
-    <link rel="stylesheet" crossorigin href="/dist/assets/style-C0BBSZZq.css">
+    <link rel="stylesheet" crossorigin href="/dist/assets/style-C0BBSZZq.css"> -->
 </head>
   <body>
     <header class="divider">
@@ -54,7 +54,10 @@
     <div class="product-detail">
       <h2 id="productName"></h2>
       <main class="divider"></main>
-      <img id="productImage" src="" />
+      <img class="divider" 
+      src="../images/tents/the-north-face-talus-tent-4-person-3-season-in-golden-oak-saffron-yellow~p~985rf_01~320.jpg" 
+      alt="Talus Tent - 4-Person, 3-Season"
+      />
       <main class="divider"></main>
       <p id="productPrice"></p>
       <div class="product-info">
@@ -72,10 +75,10 @@
 </html>
   <script type="module">
     
-    import ProductData from "/src/js/ProductData.mjs";
-    import ProductDetails from "/src/js/ProductDetails.mjs";
+    import ProductData from "../js/ProductData.mjs";
+    import ProductDetails from "../js/ProductDetails.mjs";
 
-    const dataSource = new ProductData("/src/json/tents.json");
+    const dataSource = new ProductData("../json/tents.json");
 
     // ⚠️ Make sure the Id in tents.json matches this!
     const productId = "985RF";
