@@ -1,5 +1,5 @@
 // src/js/ProductDetails.mjs
-import { setLocalStorage, getLocalStorage } from "../dist/js/utils.mjs";
+import { setLocalStorage, getLocalStorage } from "../js/utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -34,7 +34,7 @@ export default class ProductDetails {
     setLocalStorage("so-cart", cart);
 
     // redirect to cart page
-    window.location.href = "../dist/cart/index.html";
+    window.location.href = "../cart/index.html";
   }
 
   renderProductDetails() {
