@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>North Face Talus 4</title>
-  <link rel="stylesheet" href="/wdd330/src/css/style.css" />
-    <script type="module" crossorigin src="/wdd330new/dist/assets/utils-DTA1AWa-.js"></script>
-    <script type="module" crossorigin src="/wdd330new/dist/assets/product-BopOnU2u.js"></script>
-    <link rel="stylesheet" crossorigin href="/wdd330new/dist/assets/style-C0BBSZZq.css">
+  <link rel="stylesheet" href="/src/css/style.css" />
+    <script type="module" crossorigin src="../assets/utils-DTA1AWa-.js"></script>
+    <script type="module" crossorigin src="../assets/product-BopOnU2u.js"></script>
+    <link rel="stylesheet" crossorigin href="../assets/style-C0BBSZZq.css">
 </head>
   <body>
     <header class="divider">
@@ -54,7 +54,7 @@
     <div class="product-detail">
       <h2 id="productName"></h2>
       <main class="divider"></main>
-      <img id="productImage" src="Productimage" />
+      <img id="productImage" src="" />
       <main class="divider"></main>
       <p id="productPrice"></p>
       <div class="product-info">
@@ -72,10 +72,10 @@
 </html>
   <script type="module">
     
-    import ProductData from "/wdd330new/src/js/ProductData.mjs";
-    import ProductDetails from "/wdd330new/src/js/ProductDetails.mjs";
+    import ProductData from "/dist/js/ProductData.mjs";
+    import ProductDetails from "/dist/js/ProductDetails.mjs";
 
-    const dataSource = new ProductData("/wdd330new/src/json/tents.json");
+    const dataSource = new ProductData("/dist/json/tents.json");
 
     // ⚠️ Make sure the Id in tents.json matches this!
     const productId = "344YJ";
