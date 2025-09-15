@@ -1,4 +1,4 @@
-import { g as t } from "../dist/assets/utils-DTA1AWa-.js";
+import { g as t } from "../assets/utils-DTA1AWa-.js";
 /* empty css              */
 
 function e() {
