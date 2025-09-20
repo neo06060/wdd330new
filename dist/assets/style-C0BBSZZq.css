@@ -16,3 +16,31 @@
 #clearCart:hover {
   background-color: #c0392b;
 }
+
+/* Category images only */
+.categories .product-grid li img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+
+.categories .product-grid li h2 {
+  font-size: 0.9em;
+  margin: 0;
+}
+
+.categories .product-grid {
+  gap: 1.5rem;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 1rem 0;
+}
+
+.categories .product-grid li {
+  flex: 0 1 120px;
+  text-align: center;
+}
