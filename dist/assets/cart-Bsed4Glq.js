@@ -1,43 +1,43 @@
 import { g as t } from "../assets/utils-DTA1AWa-.js";
-/* empty css              */
+/* empty css */
 
-function e() {
-  const r = (t("so-cart") || []).map((c) => s(c));
-  document.querySelector(".product-list").innerHTML = r.join("");
+// ---- render cart contents ----
+function renderCartContents() {
+  const cart = t("so-cart") || [];
+  const counters = JSON.parse(localStorage.getItem("so-cart-counter") || "{}");
+
+  const html = cart.map((item) => {
+    const id = item.Id || item.id;
+    const qty = counters[id] || item.quantity || 1; // fallback to item.quantity if counter not set
+    const totalPrice = (item.FinalPrice * qty).toFixed(2);
+
+    return `<li class="cart-card divider">
+      <a href="#" class="cart-card__image">
+        <img src="${item.Image}" alt="${item.Name}" />
+      </a>
+      <a href="#">
+        <h2 class="card__name">${item.Name}</h2>
+      </a>
+      <p class="cart-card__color">${item.Colors?.[0]?.ColorName || "N/A"}</p>
+      <p class="cart-card__quantity">qty: ${qty}</p>
+      <p class="cart-card__price">$${totalPrice}</p>
+    </li>`;
+  });
+
+  document.querySelector(".product-list").innerHTML = html.join("");
 }
 
-function s(a) {
-  return `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
-    <img
-      src="${a.Image}"
-      alt="${a.Name}"
-    />
-  </a>
-  <a href="#">
-    <h2 class="card__name">${a.Name}</h2>
-  </a>
-  <p class="cart-card__color">${a.Colors?.[0]?.ColorName || "N/A"}</p>
-  <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${a.FinalPrice}</p>
-</li>`;
-}
-
-// render contents
-e();
-
-// ✅ clear cart logic
+// ---- clear cart ----
 function clearCart() {
-  localStorage.removeItem("so-cart"); // elimina el carrito
-  location.reload(); // refresca la página
+  localStorage.removeItem("so-cart");          // clear cart
+  localStorage.removeItem("so-cart-counter");  // reset counters
+  location.reload();
 }
 
-// ✅ hook button after DOM is ready
+// ---- hook clear button ----
 document.addEventListener("DOMContentLoaded", () => {
+  renderCartContents();
+
   const clearBtn = document.getElementById("clearCart");
-  if (clearBtn) {
-    clearBtn.addEventListener("click", clearCart);
-  } else {
-    console.warn("⚠️ clearCart button not found in DOM");
-  }
+  if (clearBtn) clearBtn.addEventListener("click", clearCart);
 });

@@ -44,3 +44,25 @@
   flex: 0 1 120px;
   text-align: center;
 }
+.cart-card__quantity-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.cart-card__quantity-control button {
+  background: #f0a868;
+  border: none;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: 2px 0;
+  border-radius: 3px;
+}
+
+.cart-card__quantity-control .qty-number {
+  margin: 2px 0;
+  font-weight: bold;
+}

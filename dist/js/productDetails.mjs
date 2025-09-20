@@ -1,5 +1,4 @@
-// src/js/ProductDetails.mjs
-import { setLocalStorage, getLocalStorage } from "../js/utils.mjs";
+import { getLocalStorage, setLocalStorage } from "../js/utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -9,49 +8,58 @@ export default class ProductDetails {
   }
 
   async init() {
-    // fetch product details
     this.product = await this.dataSource.findProductById(this.productId);
-
-    // render product details
     this.renderProductDetails();
 
-    // attach Add to Cart listener
     const addBtn = document.getElementById("addToCart");
-    if (addBtn) {
-      addBtn.addEventListener("click", this.addProductToCart.bind(this));
-    }
+    if (addBtn) addBtn.addEventListener("click", this.addProductToCart.bind(this));
+
+    // Display initial quantity on product page if needed
+    this.updateProductQuantityDisplay();
   }
 
   addProductToCart() {
-    let cart = getLocalStorage("so-cart") || [];
+    const cart = getLocalStorage("so-cart") || [];
+    const id = this.product.Id || this.product.id;
 
-    const productForCart = {
-      ...this.product,
-      FinalPrice: this.product.FinalPrice, // ya está en JSON
-    };
+    // Check if product exists
+    const existingIndex = cart.findIndex(item => item.Id === id);
+    if (existingIndex > -1) {
+      cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + 1;
+    } else {
+      cart.push({ ...this.product, quantity: 1, Id: id });
+    }
 
-    cart.push(productForCart);
     setLocalStorage("so-cart", cart);
 
-    // redirect to cart page
-    window.location.href = "../cart/index.html";
+    // Update the quantity display (live counter)
+    this.updateProductQuantityDisplay();
+  }
+
+  updateProductQuantityDisplay() {
+    const cart = getLocalStorage("so-cart") || [];
+    const id = this.product.Id || this.product.id;
+    const existing = cart.find(item => item.Id === id);
+    const qty = existing ? existing.quantity : 0;
+
+    const qtySpan = document.getElementById("cartCounter");
+    if (qtySpan) qtySpan.textContent = qty;
   }
 
   renderProductDetails() {
     if (!this.product) return;
 
     document.getElementById("productName").textContent = this.product.Name;
-    document.getElementById("productDescription").innerHTML =
-      this.product.DescriptionHtmlSimple || "";
+    document.getElementById("productDescription").innerHTML = this.product.DescriptionHtmlSimple || "";
     document.getElementById("productPrice").textContent = `$${this.product.FinalPrice}`;
     document.getElementById("productImage").src = this.product.Image;
 
-    // Brand puede ser objeto o string
     const brand = typeof this.product.Brand === "object" ? this.product.Brand.Name : this.product.Brand;
     document.getElementById("productBrand").textContent = brand || "";
 
-    // Colors es un array
-    document.getElementById("productColor").textContent =
-      this.product.Colors?.[0]?.ColorName || "";
+    document.getElementById("productColor").textContent = this.product.Colors?.[0]?.ColorName || "";
+
+    // Make sure there is a span for quantity:
+    // <span id="cartCounter">0</span>
   }
 }
