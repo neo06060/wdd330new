@@ -95,6 +95,39 @@
       </div>
 
     </section>
+
+    <!-- Empty state -->
+    <p class="cart-empty" hidden>Your cart is empty.</p>
+
+    <!-- Totals -->
+    <div class="cart-summary">
+      <p class="cart-total"><span class="label">Total:</span> <span class="value">$0.00</span></p>
+      <button class="btn btn-primary checkout-btn">Checkout</button>
+    </div>
+
+    <!-- Template for one cart item -->
+    <template id="cart-item-template">
+      <li class="cart-card divider" data-id="">
+        <a href="#" class="cart-card__image">
+          <img src="" alt="" />
+        </a>
+        <a href="#" class="cart-card__link">
+          <h2 class="card__name"></h2>
+        </a>
+        <p class="cart-card__color"></p>
+        <p class="cart-card__price"></p>
+
+        <div class="cart-card__controls">
+          <label>
+            qty:
+            <input type="number" class="qty" min="1" step="1" value="1" />
+          </label>
+          <button class="remove btn btn-link">Remove</button>
+        </div>
+      </li>
+    </template>
+
+
   </main>
 
   <footer id="main-footer"></footer>

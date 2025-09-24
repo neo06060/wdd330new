@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Checkout</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <script type="module">
+        // Affiche juste un total basique à partir du localStorage
+        const cart = JSON.parse(localStorage.getItem("so-cart") || "[]");
+        const total = cart.reduce((s, it) => (s + ((it.FinalPrice ?? it.Price ?? 0) * (parseInt(it.quantity ?? 1, 10) || 1))), 0);
+        document.addEventListener("DOMContentLoaded", () => {
+            const el = document.querySelector("#total");
+            if (el) el.textContent = `$${total.toFixed(2)}`;
+        });
+    </script>
+</head>
+
+<body>
+    <header id="main-header"></header>
+    <main class="divider">
+        <h2>Checkout</h2>
+        <p>Total: <strong id="total">$0.00</strong></p>
+        <!-- ici ton futur formulaire -->
+        <a class="btn" href="./index.html">Back to cart</a>
+    </main>
+    <footer id="main-footer"></footer>
+</body>
+
+</html>
