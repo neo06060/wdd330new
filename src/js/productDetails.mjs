@@ -57,6 +57,9 @@ export default class ProductDetails {
     // Save the updated cart back to localStorage
     setLocalStorage("so-cart", cart);
 
+    // Let the header know the cart changed (works across pages when header is already injected)
+    window.dispatchEvent(new Event("cart:updated"));
+
     // Update the cart count badge
     updateCartCount();
 
