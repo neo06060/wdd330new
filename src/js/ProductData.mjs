@@ -18,6 +18,6 @@ export default class ProductData {
 
   async findProductById(productId) {
     const data = await this.getData();
-    return data.find((item) => item.Id === productId);
+    return data.find((item) => String(item.Id ?? item.id) === String(productId));
   }
 }
