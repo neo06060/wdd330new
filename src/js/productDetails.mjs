@@ -19,12 +19,13 @@ export default class ProductDetails {
     // attach Add to Cart listener
     // Event delegation: fonctionne même si le bouton est re-render
     document.addEventListener('click', (e) => {
-      const btn = e.target.closest('#addToCart');
-      if (!btn) return;
-      e.preventDefault();
-      console.log('[init] addToCart clicked (delegated)');
-      this.addProductToCart();
-    });
+  const btn = e.target.closest('#addToCart');
+  if (!btn) return;
+  e.preventDefault();
+  console.log('[init] addToCart clicked (delegated)');
+  this.addProductToCart();
+});
+
     console.log('[init] listener ready');
   }
 
@@ -48,7 +49,7 @@ export default class ProductDetails {
     const existing = cart.find(p => p.Id === productForCart.Id);
     if (existing) {
       // If it exists, increase its quantity
-      existing.quantity = (existing.quantity || 1) + 1;
+      existing.quantity = Number(existing.quantity ?? 1);
     } else {
       // If not, add the product to the cart
       cart.push(productForCart);
