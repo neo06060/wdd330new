@@ -67,24 +67,3 @@ export function initCartCountWatchers() {
   // Custom event you can dispatch after add/remove to cart
   window.addEventListener("cart:updated", updateCartCount);
 }
-
-/** Load header.html and footer.html, then insert them into #main-header and #main-footer */
-export async function loadHeaderFooter() {
-  const base = `${getSrcRoot()}public/partials/`; // .../src/public/partials/
-  const [headerHTML, footerHTML] = await Promise.all([
-    loadTemplate(`${base}header.html`),
-    loadTemplate(`${base}footer.html`)
-  ]);
-
-  const headerEl = document.getElementById("main-header");
-  const footerEl = document.getElementById("main-footer");
-
-  // Render header first, then update the cart count and start watchers
-  renderWithTemplate(headerHTML, headerEl, null, () => {
-    updateCartCount();         // now #cart-count exists → safe to update
-    initCartCountWatchers();   // keep badge in sync after future cart changes
-  });
-
-  // Render footer (no callback needed)
-  renderWithTemplate(footerHTML, footerEl);
-}
