@@ -460,3 +460,23 @@ main.checkout-page {
   max-width: 450px;
   margin: 0 auto; /* horizontal centering */
 }
+.search-container {
+  flex: 1;
+  max-width: 600px;
+  margin: 0 1rem;
+  align-self: center;
+}
+
+#navbarSearch {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+}
+
+#navbarSearch:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
