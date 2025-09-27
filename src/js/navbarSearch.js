@@ -1,4 +1,6 @@
-// Map product IDs to actual HTML filenames
+// navbarSearch.js
+
+// Map product IDs to the actual HTML filenames
 const productPageMap = {
   "985RF": "northface-talus-4.html",
   "989CG": "northface-talus-3.html",
@@ -9,24 +11,30 @@ const productPageMap = {
   // add more as needed
 };
 
+// Detect environment and set base path
+const hostname = window.location.hostname;
+let basePath;
+if (hostname === "127.0.0.1" || hostname === "localhost") {
+  basePath = "/src/product_pages/"; // localhost
+} else if (hostname === "neo06060.github.io") {
+  basePath = "/wdd330new/src/product_pages/"; // GitHub Pages
+} else {
+  basePath = "/src/product_pages/"; // fallback
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("navbarSearch");
   if (!input) return;
 
-  // JSON files for products
   const jsonFiles = [
     "./json/tents.json",
     "./json/backpacks.json",
     "./json/sleeping-bags.json"
   ];
 
-  // Determine base path depending on environment
-  const isLocalhost = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
-  const basePath = isLocalhost ? "/src/product_pages/" : "/wdd330new/src/product_pages/";
-
   input.addEventListener("keydown", async (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // prevent form submission
+      e.preventDefault();
       const query = input.value.trim();
       if (!query) return;
 
@@ -35,19 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const allProducts = await Promise.all(
           jsonFiles.map(file => fetch(file).then(res => res.json()))
         );
-
         const products = allProducts.flat();
 
-        // Normalize query: lowercase and remove extra spaces
-        const normalizedQuery = query.toLowerCase().replace(/\s+/g, " ").trim();
-
-        // Fuzzy search: match if product name contains all words in query
-        const matches = products.filter(p => {
-          const name = (p.Name || "").toLowerCase();
-          return normalizedQuery.split(" ").every(word => name.includes(word));
-        });
+        // Fuzzy search (partial match)
+        const matches = products.filter(p => p.Name && p.Name.toLowerCase().includes(query.toLowerCase()));
 
         if (matches.length === 1) {
+          // Single match → go to page
           const product = matches[0];
           const pageFile = productPageMap[product.Id];
           if (pageFile) {
@@ -56,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("No page found for that product.");
           }
         } else if (matches.length > 1) {
+          // Multiple matches → list them
           alert(
             "Multiple products found:\n" +
             matches.map(p => `- ${p.Name}`).join("\n") +
