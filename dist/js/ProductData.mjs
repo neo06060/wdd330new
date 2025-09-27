@@ -1,4 +1,6 @@
-// src/js/ProductData.mjs
+import ExternalServices from "./ExternalServices.mjs";
+export default ExternalServices;
+
 export default class ProductData {
   constructor(jsonFile) {
     this.jsonFile = jsonFile;
