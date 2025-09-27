@@ -1,4 +1,4 @@
-import { loadHeaderFooter } from "./utils.mjs";
+import { loadHeaderFooter } from "./loadHeaderFooter.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
