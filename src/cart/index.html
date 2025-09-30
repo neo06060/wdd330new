@@ -8,8 +8,8 @@
 
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="icon" href="data:," />
+  <!-- JS du panier uniquement (main.js inutile ici) -->
   <script type="module" src="../js/cart.js"></script>
-  <script type="module" src="/wdd330new/src/js/main.js"></script>
 </head>
 
 <body>
@@ -17,56 +17,27 @@
 
   <main class="divider">
     <section class="products">
-      <h2>My Cart</h2>
+      <h1>My Cart</h1>
 
-      <ul class="product-list">
-        <!-- Cart items rendered dynamically by JS -->
-      </ul>
+      <!-- Items du panier rendus par cart.js -->
+      <ul class="product-list"></ul>
 
-      <!-- Clear Cart Button -->
-      <div class="cart-controls">
-        <button id="clearCart" aria-label="Clear Cart">
-          <img src="../images/trashcan.png" alt="Clear Cart" class="trash-icon" />
-        </button>
-      </div>
-
-      <!-- Empty cart state -->
+      <!-- État panier vide (géré par cart.js si tu veux l'utiliser) -->
       <p class="cart-empty" hidden>Your cart is empty.</p>
 
-      <!-- Cart summary -->
+      <!-- Résumé + actions -->
       <div class="cart-summary">
-        <p class="cart-total">
-          <span class="label">Total:</span>
-          <span class="value">$0.00</span>
-        </p>
-        <button id="checkoutBtn" class="checkout-btn" aria-label="Checkout">
-          <img src="../images/cart.png" alt="Checkout" class="cart-icon" />
-        </button>
+        <p class="cart-total">$0.00</p>
+        <div class="cart-controls" style="gap:12px">
+          <button id="clearCart" aria-label="Clear Cart" title="Clear Cart">
+            <img src="../images/trashcan.png" alt="Clear Cart" class="trash-icon" />
+          </button>
+          <button id="checkoutBtn" class="checkout-btn" aria-label="Checkout" title="Checkout">
+            <img src="../images/cart.png" alt="Checkout" class="cart-icon" />
+          </button>
+        </div>
       </div>
     </section>
-
-    <!-- Template for one cart item -->
-    <template id="cart-item-template">
-      <li class="cart-card divider" data-id="">
-        <a href="#" class="cart-card__image">
-          <img src="" alt="" />
-        </a>
-        <a href="#" class="cart-card__link">
-          <h2 class="card__name"></h2>
-        </a>
-        <p class="cart-card__color"></p>
-        <p class="cart-card__price"></p>
-
-        <div class="cart-card__controls">
-          <label>
-            qty:
-            <input type="number" class="qty" min="1" step="1" value="1" />
-          </label>
-          <button class="remove btn btn-link">Remove</button>
-        </div>
-      </li>
-    </template>
-
   </main>
 
   <div id="footercontainer"></div>
@@ -76,4 +47,5 @@
     loadHeaderFooter();
   </script>
 </body>
+
 </html>

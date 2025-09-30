@@ -1,0 +1,16 @@
+[
+    {
+        "Id": "HM100",
+        "Brand": "SkyRest",
+        "Name": "Camping Hammock",
+        "Image": "/images/banner.jpg",
+        "FinalPrice": 39.99
+    },
+    {
+        "Id": "HM200",
+        "Brand": "SkyRest",
+        "Name": "Double Hammock",
+        "Image": "/images/banner.jpg",
+        "FinalPrice": 54.99
+    }
+]

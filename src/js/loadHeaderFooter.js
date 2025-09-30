@@ -1,15 +1,18 @@
 export async function loadHeaderFooter() {
-    async function loadHTML (containerId, url) {
-        const container = document.getElementById(containerId);
-        try{
-            const response = await fetch(url);
-            if (!response.ok) throw new Error ('Failed to load' + url);
-            container.innerHTML = await response.text();
-        } catch (error) {
-            console.error(error);
-            container.innerHTML = '<p>Failed to load content</p>';
+    async function loadInto(containerId, urls) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        for (const url of urls) {
+            try {
+                const res = await fetch(url);
+                if (res.ok) { el.innerHTML = await res.text(); return; }
+            } catch (_) { }
         }
+        el.innerHTML = `<p style="color:#b00;">Failed to load ${urls[0]}</p>`;
     }
-    await loadHTML('headercontainer', '../assets/header.html');
-    await loadHTML('footercontainer', '../assets/footer.html');
+
+    await Promise.all([
+        loadInto("headercontainer", ["/assets/header.html", "./assets/header.html", "../assets/header.html"]),
+        loadInto("footercontainer", ["/assets/footer.html", "./assets/footer.html", "../assets/footer.html"]),
+    ]);
 }

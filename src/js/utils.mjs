@@ -1,69 +1,27 @@
-// src/js/utils.mjs
+export function setLocalStorage(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+export function getLocalStorage(key) { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
+export function getParam(name) { const u = new URL(window.location.href); return u.searchParams.get(name); }
+export function toTitleCase(str) { return (str || "").replace(/[-_]+/g, " ").replace(/\b\w/g, m => m.toUpperCase()); }
+export function formatMoney(n) { const v = Number(n || 0); return `$${v.toFixed(2)}`; }
 
-// Save an object/value into localStorage as JSON
-export function setLocalStorage(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+// normalise divers formats d'URL d'images vers un chemin utilisable
+export function normalizeImageUrl(raw) {
+  if (!raw) return "/images/banner-sm.jpg";
+  try {
+    if (/^data:/.test(raw) || /^https?:\/\//i.test(raw) || raw.startsWith("/")) return raw;
+    if (/^images\//i.test(raw)) return "/" + raw;
+    const i = raw.indexOf("/images/");
+    if (i !== -1) return raw.slice(i);
+    return raw;
+  } catch { return "/images/banner-sm.jpg"; }
 }
 
-// Read and parse JSON from localStorage
-export function getLocalStorage(key) {
-  const data = localStorage.getItem(key);
-  return data ? JSON.parse(data) : null;
-}
-
-// Read a query string parameter
-export function getParam(param) {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(param);
-}
-
-// Update the cart badge (#cart-count) based on items in localStorage("so-cart")
+// badge du panier (basique)
 export function updateCartCount() {
-  const cart = getLocalStorage("so-cart") || [];
-
-  // If item.quantity is present use it; otherwise count as 1
-  const count = cart.reduce((sum, item) => {
-    const q = parseInt(item?.quantity ?? 1, 10);
-    return sum + (Number.isFinite(q) && q > 0 ? q : 1);
-  }, 0);
-
-  const badge = document.querySelector("#cart-count");
-  if (!badge) return;
-  badge.textContent = count > 0 ? String(count) : "0";
-}
-
-/** Render a single template into a parent element, with optional callback */
-export function renderWithTemplate(template, parentElement, data = null, callback = null) {
-  if (!parentElement) return;
-  parentElement.innerHTML = template;
-  if (typeof callback === "function") {
-    callback(parentElement, data);
-  }
-}
-
-/** Get the /src/ root based on the current page path */
-function getSrcRoot() {
-  const path = window.location.pathname; // e.g. /wdd330new/src/product_pages/index.html
-  const idx = path.indexOf("/src/");
-  if (idx !== -1) return path.substring(0, idx + 5); // keep ".../src/"
-  // fallback: assume /src/ at site root
-  return "/src/";
-}
-
-/** Fetch an HTML file and return its text content */
-export async function loadTemplate(path) {
-  const res = await fetch(path, { credentials: "same-origin" });
-  if (!res.ok) throw new Error(`Failed to load template: ${path} (${res.status})`);
-  return await res.text();
-}
-
-/** Listen for cart changes so the badge keeps in sync across pages/tabs */
-export function initCartCountWatchers() {
-  // Updates when localStorage changes (this or another tab)
-  window.addEventListener("storage", (e) => {
-    if (e.key === "so-cart") updateCartCount();
-  });
-  // Custom event you can dispatch after add/remove to cart
-  window.addEventListener("cart:updated", updateCartCount);
+  try {
+    const cart = getLocalStorage("so-cart") || [];
+    const count = cart.reduce((a, i) => a + (i.quantity || 1), 0);
+    const el = document.getElementById("cart-count");
+    if (el) el.textContent = String(count);
+  } catch { }
 }
