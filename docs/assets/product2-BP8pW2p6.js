@@ -1,1 +1,0 @@
-import{l as o}from"./loadHeaderFooter-DATsXWpA.js";import{P as t}from"./product-Bt8ONYD0.js";import"./main-0nrLRdWW.js";import{P as r}from"./ProductData-lcQ-4hqf.js";import"./utils-DCDllkeh.js";const a=new r("../json/tents.json"),s="880RR",e=new t(s,a);e.init();o();
