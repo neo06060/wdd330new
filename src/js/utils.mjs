@@ -67,3 +67,27 @@ export function initCartCountWatchers() {
   // Custom event you can dispatch after add/remove to cart
   window.addEventListener("cart:updated", updateCartCount);
 }
+// --- images ---------------------------------------------------------------
+// Normalise un chemin d'image provenant des JSON locaux ou de l'API
+export function normalizeImageUrl(raw) {
+  if (!raw) return "";
+
+  // 1) déjà http(s) → garder
+  if (/^https?:\/\//i.test(raw)) return raw;
+
+  // 2) /src/images/...  →  /images/... (Vite sert src/images sous /images)
+  if (raw.startsWith("/src/")) return raw.replace(/^\/src\//, "/");
+
+  // 3) /images/... → ok
+  if (raw.startsWith("/images/")) return raw;
+
+  // 4) images/... → rendre absolu
+  if (/^images\//i.test(raw)) return "/" + raw;
+
+  // 5) contient "/images/" quelque part → garder la partie depuis /images/...
+  const i = raw.indexOf("/images/");
+  if (i !== -1) return raw.slice(i);
+
+  // 6) sinon, retourner tel quel (on laissera onerror gérer un fallback)
+  return raw;
+}

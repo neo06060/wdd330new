@@ -1,11 +1,4 @@
-// src/js/cart.js
-import { getLocalStorage, setLocalStorage, updateCartCount } from "./utils.mjs";
-
-// convert "/src/..." -> "../..."
-function normalizeImg(path) {
-  if (!path) return "../images/placeholder.jpg";
-  return path.startsWith("/src/") ? `../${path.slice(5)}` : path;
-}
+import { getLocalStorage, setLocalStorage, updateCartCount, normalizeImageUrl } from "./utils.mjs";
 
 const MONEY = (n) => `$${Number(n || 0).toFixed(2)}`;
 
@@ -32,15 +25,14 @@ function cartTotal(cart) {
 
 function renderCart() {
   const listEl = document.querySelector(".product-list");
-  const emptyEl = document.querySelector(".cart-empty");            // <p class="cart-empty" hidden>...</p>
-  const totalEl = document.querySelector(".cart-total .value");     // <span class="value"></span>
+  const emptyEl = document.querySelector(".cart-empty");
+  const totalEl = document.querySelector(".cart-total .value");
 
   if (!listEl) return;
 
   const cart = getCart();
   listEl.innerHTML = "";
 
-  // état vide
   if (cart.length === 0) {
     if (emptyEl) emptyEl.hidden = false;
     if (totalEl) totalEl.textContent = MONEY(0);
@@ -56,10 +48,12 @@ function renderCart() {
     const color = item?.Colors?.[0]?.ColorName ?? "N/A";
     const qty = Number.parseInt(item?.quantity ?? 1, 10) || 1;
     const unit = item?.FinalPrice ?? item?.Price ?? 0;
+    const img = normalizeImageUrl(item.Image || item.PrimaryMedium || item.PrimaryLarge || "");
 
     li.innerHTML = `
       <a class="cart-card__image">
-        <img src="${normalizeImg(item.Image)}" alt="${item.Name}" />
+        <img src="${img}" alt="${item.Name}"
+             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='320' height='240'><rect width='320' height='240' fill='#eee'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='18' fill='#888'>No image</text></svg>`)}';" />
       </a>
       <a><h2 class="card__name">${item.Name}</h2></a>
       <p class="cart-card__color">${color}</p>
@@ -70,7 +64,6 @@ function renderCart() {
       </div>
     `;
 
-    // changer quantité
     li.querySelector(".qty").addEventListener("change", (e) => {
       const newQty = Math.max(1, Number.parseInt(e.target.value, 10) || 1);
       const next = getCart();
@@ -82,7 +75,6 @@ function renderCart() {
       }
     });
 
-    // suppression
     li.querySelector(".remove").addEventListener("click", () => {
       const next = getCart().filter((it) => String(it.Id) !== String(item.Id));
       saveCart(next);
@@ -100,7 +92,6 @@ function clearCart() {
   renderCart();
 }
 
-// init
 document.addEventListener("DOMContentLoaded", () => {
   renderCart();
   updateCartCount();
@@ -113,11 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Your cart is empty.");
         return;
       }
-      // Va vers checkout.html placé dans le même dossier que cette page (cart/index.html)
       const base = location.pathname.replace(/index\.html?$/i, "");
       location.href = `${base}checkout.html`;
     });
   }
-  const clearBtn = document.querySelector("#clearCart"); // bouton optionnel
+  const clearBtn = document.querySelector("#clearCart");
   if (clearBtn) clearBtn.addEventListener("click", clearCart);
 });
