@@ -1,79 +1,121 @@
-import ProductData from "./ProductData.mjs";
-import { getParam, normalizeImageUrl } from "./utils.mjs";
 import { loadHeaderFooter } from "./loadHeaderFooter.js";
+import ProductData from "./ProductData.mjs";
+import { getParam, toTitleCase, formatMoney, updateCartCount } from "./utils.mjs";
 
-await loadHeaderFooter();
+// --- Helpers robustes ---
 
-const category = getParam("category") || "tents";
-const dataSource = new ProductData(category);
-const listElement = document.querySelector(".product-list");
-const titleEl = document.querySelector(".category-title");
-
-function niceName(cat) {
-    return cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+// 1) brand: supporte string ou objet {Name|BrandName|Title|...}
+function safeBrand(b) {
+    if (!b) return "";
+    if (typeof b === "string") return b;
+    if (typeof b === "object") {
+        return (
+            b.Name ||
+            b.BrandName ||
+            b.Title ||
+            Object.values(b).find((v) => typeof v === "string") ||
+            ""
+        );
+    }
+    return String(b);
 }
 
-// Fallback image inline (aucun réseau requis)
-const FALLBACK_SVG =
-    "data:image/svg+xml;utf8," +
-    encodeURIComponent(
-        `<svg xmlns='http://www.w3.org/2000/svg' width='320' height='240' viewBox='0 0 320 240'>
-      <rect width='320' height='240' fill='#eee'/>
-      <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
-            font-family='Arial,Helvetica,sans-serif' font-size='18' fill='#888'>
-        No image
-      </text>
-    </svg>`
-    );
-
-// Redirige les 4 tentes vers tes pages statiques existantes
-const knownPages = {
-    "880RR": "marmot-ajax-3.html",
-    "985RF": "northface-alpine-3.html",
-    "344YJ": "northface-talus-4.html",
-    "410JX": "cedar-ridge-rimrock-2.html",
-};
-
-function imageUrl(product) {
-    const raw = product?.PrimaryMedium || product?.PrimaryLarge || product?.Image || "";
-    return normalizeImageUrl(raw) || FALLBACK_SVG;
+// 2) Récupère une URL d'image dans toutes les formes usuelles de data
+function rawImageFrom(p) {
+    const cands = [];
+    if (p.Images) {
+        if (Array.isArray(p.Images)) {
+            const f = p.Images[0] || {};
+            cands.push(f.Url, f.url, f.Src, f.src, f.Href, f.href);
+        } else if (typeof p.Images === "object") {
+            cands.push(
+                p.Images.PrimaryLarge,
+                p.Images.PrimaryMedium,
+                p.Images.PrimarySmall,
+                p.Images.Primary,
+                p.Images.Url
+            );
+        }
+    }
+    cands.push(p.Image, p.image, p.Img, p.img);
+    return cands.find(Boolean);
 }
 
-function productTemplate(product) {
-    const page = knownPages[String(product.Id)] ?? "marmot-ajax-3.html"; // fallback neutre
-    const url = `../product_pages/${page}?product=${product.Id}`;
-
-    const img = imageUrl(product);
-    const price =
-        (product.FinalPrice && product.FinalPrice.toFixed
-            ? product.FinalPrice.toFixed(2)
-            : product.ListPrice) ?? "";
-
-    return `
-    <li class="product-card" style="list-style:none;">
-      <a href="${url}" class="product-card__image" style="display:block;">
-        <img src="${img}" alt="${product.Name}"
-             onerror="this.onerror=null;this.src='${FALLBACK_SVG}';"
-             style="max-width:100%;height:auto;display:block;">
-      </a>
-      <h2 class="card__name">${product.Name}</h2>
-      <p class="card__price">${price ? `$${price}` : ""}</p>
-    </li>`;
-}
-
-async function renderList() {
+// 3) Normalise le chemin pour une page située dans /src/product_listing/
+//    - Si on reçoit "images/xxx.jpg" on retourne "../images/xxx.jpg"
+//    - Si absolu http(s) ou data:, on laisse tel quel
+//    - Si déjà relatif ../ ou ./ on laisse tel quel
+function resolveImageForListing(raw) {
+    if (!raw) return "../images/noun_Tent_2517.svg";
     try {
-        const products = await dataSource.getData();
-        listElement.innerHTML = (products && products.length)
-            ? products.map(productTemplate).join("")
-            : `<li style="list-style:none;margin:1rem 0;"><em>No products found for "${niceName(category)}".</em></li>`;
-    } catch (e) {
-        console.error(e);
-        listElement.innerHTML =
-            `<li style="list-style:none;margin:1rem 0;color:#b00;"><strong>Error:</strong> unable to load products.</li>`;
-    } finally {
-        if (titleEl) titleEl.textContent = `Top Products: ${niceName(category)}`;
+        if (/^https?:\/\//i.test(raw) || raw.startsWith("data:")) return raw;
+        if (raw.startsWith("../") || raw.startsWith("./")) return raw;
+        if (raw.startsWith("/")) {
+            // Chemin absolu serveur. Souvent faux dans ce cours → on tente de corriger
+            // Ex: "/images/xxx.jpg" -> "../images/xxx.jpg"
+            if (raw.startsWith("/images/")) return ".." + raw; // "/images/..." => "../images/..."
+            if (raw.startsWith("/src/images/")) return ".." + raw.replace("/src", ""); // "/src/images/..." => "../images/..."
+            return raw;
+        }
+        // "images/..." -> "../images/..."
+        if (raw.startsWith("images/")) return "../" + raw;
+        // "src/images/..." -> "../images/..."
+        if (raw.startsWith("src/images/")) return "../" + raw.replace(/^src\//, "");
+        return raw;
+    } catch {
+        return "../images/noun_Tent_2517.svg";
     }
 }
 
-renderList();
+function imageUrl(p) {
+    return resolveImageForListing(rawImageFrom(p));
+}
+
+// --- Carte produit ---
+function productCard(p) {
+    const id = p.Id ?? p.id ?? "";
+    const img = imageUrl(p);
+    const brand = safeBrand(p.Brand ?? p.brand);
+    const name = p.Name ?? p.name ?? "";
+    const price =
+        p.FinalPrice ?? p.Final ?? p.ListPrice ?? p.SuggestedRetailPrice ?? p.Price ?? 0;
+
+    return /*html*/ `
+    <li class="product-card">
+      <a href="../product/index.html?product=${encodeURIComponent(id)}">
+        <img
+          src="${img}"
+          alt="${name}"
+          style="width:100%;height:180px;object-fit:cover;display:block"
+          onerror="this.onerror=null; this.src='../images/noun_Tent_2517.svg';"
+        />
+        ${brand ? `<h3 class="card__brand">${brand}</h3>` : ""}
+        <h2 class="card__name">${name}</h2>
+        <p class="product-card__price">${formatMoney(price)}</p>
+      </a>
+    </li>`;
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadHeaderFooter();
+    updateCartCount();
+
+    const category = getParam("category") || "tents";
+    const title = document.querySelector(".category-title");
+    if (title) title.textContent = toTitleCase(category);
+
+    const listEl = document.querySelector(".product-list");
+    const dataSource = new ProductData(category);
+
+    try {
+        const products = await dataSource.getData();
+        if (!products || !products.length) {
+            listEl.innerHTML = `<li>Aucun produit trouvé pour "${category}".</li>`;
+            return;
+        }
+        listEl.innerHTML = products.map(productCard).join("");
+    } catch (err) {
+        console.error(err);
+        listEl.innerHTML = `<li>Erreur de chargement des produits.</li>`;
+    }
+});
