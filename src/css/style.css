@@ -625,3 +625,168 @@ main.checkout-page {
 .product-list * {
   text-align: left;
 }
+
+/* === WDD330 • Checkout polish / overrides === */
+
+/* Palette un peu plus vive (facultatif) */
+:root {
+  --primary-color: #ff7a18;
+  /* accent chaleureux */
+  --secondary-color: #0f62fe;
+  /* bleu action */
+  --tertiary-color: #8a470c;
+}
+
+/* Carte principale plus “carrée”, plus nette */
+.checkout-container {
+  max-width: 680px;
+  border: 1px solid rgba(0, 0, 0, .06);
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .08);
+  padding: 2rem 2rem 1.5rem;
+  background: #fff;
+}
+
+/* Titre avec accent discret */
+.checkout-container h2 {
+  font-weight: 800;
+  letter-spacing: .2px;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.checkout-container h2::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 3px;
+  background: var(--primary-color);
+  border-radius: 3px;
+  margin: .4rem auto 0;
+}
+
+/* Fieldsets = sections “cartes” uniformes */
+.checkout-container form fieldset {
+  background: #fafafa;
+  border: 1px solid #e7e7e7;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Légende en pastille colorée */
+.checkout-container form fieldset>legend {
+  padding: .15rem .6rem;
+  font-size: .9rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--secondary-color);
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: .6rem;
+}
+
+/* Grille auto propre pour les champs (1 col mobile / 2 cols desktop) */
+.checkout-container form fieldset {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .75rem .9rem;
+}
+
+@media (min-width: 680px) {
+  .checkout-container form fieldset {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Labels en bloc + inputs full width */
+.checkout-container form label {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  font-size: .95rem;
+}
+
+/* Inputs “carrés”, nets, focus clair */
+.checkout-container input[type="text"],
+.checkout-container input[type="email"],
+.checkout-container input[type="tel"],
+.checkout-container input[type="number"] {
+  width: 100%;
+  padding: .7rem .85rem;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .02s ease;
+}
+
+.checkout-container input:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(15, 98, 254, .18);
+}
+
+/* Bouton principal plus “vivant” */
+.checkout-container button,
+#checkoutSubmit {
+  width: 100%;
+  padding: .9rem 1.2rem;
+  border-radius: 12px;
+  border: 0;
+  background: linear-gradient(135deg, var(--secondary-color), #4ba3ff);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .2px;
+  box-shadow: 0 8px 18px rgba(15, 98, 254, .25);
+  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.checkout-container button:hover,
+#checkoutSubmit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15, 98, 254, .28);
+  filter: saturate(1.1);
+}
+
+.checkout-container button:active,
+#checkoutSubmit:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(15, 98, 254, .22);
+}
+
+/* Résumé : carte claire + alignements typographiques */
+.order-summary {
+  background: #fafafa;
+  border: 1px solid #e7e7e7;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-top: 1.25rem;
+  text-align: left;
+}
+
+.order-summary h3 {
+  margin: 0 0 .6rem 0;
+  font-size: 1.05rem;
+  letter-spacing: .2px;
+}
+
+.order-summary .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: .35rem 0;
+}
+
+.order-summary .total {
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-top: 1px dashed #e0e0e0;
+  margin-top: .6rem;
+  padding-top: .6rem;
+}
+
+/* Petites retouches globales pour l’alignement */
+.checkout-page {
+  padding: 2.2rem 1rem;
+}

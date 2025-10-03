@@ -1,38 +1,53 @@
-import { getLocalStorage, setLocalStorage, formatMoney } from "./utils.mjs";
+// CheckoutValidation.js
+import CheckoutProcess from "./CheckoutProcess.mjs";
 
-function totals() {
-  const items = getLocalStorage("so-cart") || [];
-  const subtotal = items.reduce((s, i) => s + (Number(i.FinalPrice ?? i.Price ?? 0) * (i.quantity || 1)), 0);
-  const tax = +(subtotal * 0.06).toFixed(2);
-  const shipping = 0; // adapte si besoin
-  const total = +(subtotal + tax + shipping).toFixed(2);
-
-  const $ = (id) => document.getElementById(id);
-  if ($("subtotal")) $("subtotal").textContent = formatMoney(subtotal);
-  if ($("tax")) $("tax").textContent = formatMoney(tax);
-  if ($("shipping")) $("shipping").textContent = formatMoney(shipping);
-  if ($("orderTotal")) $("orderTotal").textContent = formatMoney(total);
+// petit helper d’alerte non-intrusif (Stretch W04)
+function alertMessage(message, scroll = true) {
+  const main = document.querySelector("main") || document.body;
+  const box = document.createElement("div");
+  box.setAttribute("role", "status");
+  box.style.padding = "12px";
+  box.style.margin = "0 0 12px 0";
+  box.style.border = "1px solid #f0c36d";
+  box.style.background = "#fff8e5";
+  box.style.borderRadius = "8px";
+  box.style.fontSize = "0.95rem";
+  box.textContent = typeof message === "string" ? message : JSON.stringify(message);
+  main.prepend(box);
+  if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+  setTimeout(() => box.remove(), 6000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  totals();
+  // Instancie le process : clé du panier + sélecteur du bloc récap
+  const process = new CheckoutProcess("so-cart", "main");
+  process.init();               // calcule le subtotal
+  process.calculateOrderTotal(); // complète tax/shipping/total
 
   const form = document.getElementById("checkout-form");
   if (!form) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    totals();
-    const items = getLocalStorage("so-cart") || [];
-    if (!items.length) {
-      alert("Your cart is empty.");
+
+    // Validation HTML5 (required, etc.)
+    if (!form.checkValidity()) {
+      form.reportValidity();
       return;
     }
 
-    // validation HTML5 fait déjà le gros du travail (required)
-    // ici on simule la confirmation de commande
-    alert("Order placed! Thank you.");
-    setLocalStorage("so-cart", []);
-    window.location.href = "../index.html"; // retour, adapte si besoin
+    try {
+      // Lance le checkout (envoie payload au backend)
+      const res = await process.checkout(form);
+
+      // Succès : vider panier + aller à la page succès
+      localStorage.removeItem("so-cart");
+      // Adapte le chemin si ta page de succès est ailleurs
+      window.location.href = "./checkout-success.html";
+    } catch (err) {
+      console.error("Checkout error:", err);
+      // Affiche le détail d'erreur renvoyé par le serveur
+      alertMessage(err?.message ?? "Checkout failed. Please verify your data.");
+    }
   });
 });
