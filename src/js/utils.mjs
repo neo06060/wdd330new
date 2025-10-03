@@ -2,7 +2,7 @@ export function setLocalStorage(key, value) { localStorage.setItem(key, JSON.str
 export function getLocalStorage(key) { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
 export function getParam(name) { const u = new URL(window.location.href); return u.searchParams.get(name); }
 export function toTitleCase(str) { return (str || "").replace(/[-_]+/g, " ").replace(/\b\w/g, m => m.toUpperCase()); }
-export function formatMoney(n) { const v = Number(n || 0); return `$${v.toFixed(2)}`; }
+export function formatMoney(n) { const v = Number(n || 0); return `$${v.toFixed(2)}`; } // <- export bien présent
 
 // normalise divers formats d'URL d'images vers un chemin utilisable
 export function normalizeImageUrl(raw) {
